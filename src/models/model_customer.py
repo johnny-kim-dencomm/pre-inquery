@@ -6,7 +6,7 @@ from src.database import Base
 class Member(Base):
     __tablename__ = "cst_member"
 
-    member_uid: str | Column = Column(String(35), name="member_uid", primary_key=True, unique=True)
+    member_uid: str | Column = Column(String(36), name="member_uid", primary_key=True, unique=True)
     email: str | Column = Column(String(255), name="email", nullable=False)
     nick_nm: str | Column = Column(String(100), name="nick_nm", nullable=False)
     birth_dy: str | Column = Column(String(10), name="birth_dy", nullable=True)
@@ -18,7 +18,7 @@ class Member(Base):
 class SnsLogin(Base):
     __tablename__ = "cst_sns_login"
 
-    member_uid: str | Column = Column(String(35), ForeignKey("cst_member.member_uid"), primary_key=True)
+    member_uid: str | Column = Column(String(36), ForeignKey("cst_member.member_uid"), primary_key=True)
     provider: str | Column = Column(String(50), name="provider", nullable=False, primary_key=True)
     accs_key: str | Column = Column(String(255), name="accs_key", nullable=False)
     created_at: datetime | Column = Column(DateTime, name="created_at", nullable=False, default=datetime.now(UTC))
