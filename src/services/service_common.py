@@ -1,5 +1,5 @@
 from datetime import datetime, UTC
-from sqlalchemy import text
+from sqlalchemy import text, update
 from fastapi_sqlalchemy import db
 
 from src.models import model_common
@@ -22,7 +22,7 @@ async def get_code_list(grp_cd: str | None, code_nm: str | None):
             stmt += f"AND A.code_nm LIKE '%{code_nm}%"
 
         ret_list = db.session.execute(text(stmt)).fetchall()
-        converted_list = list[schema_common.CodeOutput]
+        converted_list = []
         if len(ret_list) > 0:
             for item in ret_list:
                 c_item = schema_common.CodeOutput()
@@ -35,7 +35,7 @@ async def get_code_list(grp_cd: str | None, code_nm: str | None):
                 c_item.created_at = item.created_at
                 c_item.updated_by = item.updated_by
                 c_item.updated_at = item.updated_at
-
+                converted_list.append(c_item)
             return converted_list
         else:
             return []
@@ -60,6 +60,47 @@ async def create_code(code: schema_common.CodeInput, user_id: str) -> bool:
         new_code.updated_at = datetime.now(UTC)
         new_code.updated_by = user_id
         db.session.add(new_code)
+        db.session.commit()
+        return True
+    except Exception as e:
+        db.session.rollback()
+        raise e
+
+
+async def update_code(code: schema_common.CodeInput, user_id: str) -> bool:
+    try:
+        db.session.execute(
+            update(model_common.Code)
+            .where(model_common.Code.grp_cd == code.grp_cd, model_common.Code.code_cd == code.code_cd)
+            .values(
+                code_nm = code.code_nm,
+                flag1 = code.flag1,
+                flag2 = code.flag2,
+                flag3 = code.flag3,
+                order_no = code.order_no,
+                use_yn = code.use_yn,
+                updated_at = datetime.now(UTC),
+                updated_by = user_id
+            )
+        )
+        db.session.commit()
+        return True
+    except Exception as e:
+        db.session.rollback()
+        raise e
+
+
+def delete_code(grp_cd: str, code_cd: str, user_id: str):
+    try:
+        db.session.execute(
+            update(model_common.Code)
+            .where(model_common.Code.grp_cd == grp_cd, model_common.Code.code_cd == code_cd)
+            .values(
+                use_yn="N",
+                updated_at=datetime.now(UTC),
+                updated_by=user_id
+            )
+        )
         db.session.commit()
         return True
     except Exception as e:
