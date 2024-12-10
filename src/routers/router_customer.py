@@ -28,7 +28,8 @@ def post_customer_create(
 @router.get(
     path="/list",
     summary="등록된 회원 목록",
-    response_class=JSONResponse
+    response_class=JSONResponse,
+    response_model=list[schema_customer.MemberInfo]
 )
 async def get_customer_list():
     try:

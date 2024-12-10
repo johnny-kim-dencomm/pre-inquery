@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi_sqlalchemy import DBSessionMiddleware
 from starlette.middleware.cors import CORSMiddleware
 
-from src.routers import router_customer
+from src.routers import router_customer, router_hospital
 from src.models import model_customer
 from src.database import engine
 from src.const import const
@@ -41,6 +41,7 @@ def include_routers():
     # Include routers
     print("Include routers...")
     app.include_router(router=router_customer.router, prefix="/customer")
+    app.include_router(router=router_hospital.router, prefix="/hospital")
 
 
 def init_database():
