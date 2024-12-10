@@ -6,8 +6,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi_sqlalchemy import DBSessionMiddleware
 from starlette.middleware.cors import CORSMiddleware
 
-from src.routers import router_customer, router_hospital
-from src.models import model_customer
+from src.routers import router_customer, router_hospital, router_common
+from src.models import model_customer, model_hostpital, model_common
 from src.database import engine
 from src.const import const
 
@@ -42,12 +42,15 @@ def include_routers():
     print("Include routers...")
     app.include_router(router=router_customer.router, prefix="/customer")
     app.include_router(router=router_hospital.router, prefix="/hospital")
+    app.include_router(router=router_common.router, prefix="/common")
 
 
 def init_database():
     # Database Initializing
     print("Initializing database tables...")
     model_customer.Base.metadata.create_all(bind=engine)
+    model_hostpital.Base.metadata.create_all(bind=engine)
+    model_common.Base.metadata.create_all(bind=engine)
 
 
 @app.get("/")
