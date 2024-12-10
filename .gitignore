@@ -27,4 +27,5 @@ archive.zip
 .cache
 
 # macOS
+.env
 .DS_Store
