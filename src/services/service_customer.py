@@ -16,6 +16,8 @@ def create_customer(param: schema_customer.MemberInput)->str:
         newMember.member_uid = uuid4()
         newMember.nick_nm = param.nick_nm
         newMember.email = param.email
+        newMember.language = param.language
+        newMember.address=param.address
         newMember.created_at = datetime.now(UTC)
         newMember.updated_at = datetime.now(UTC)
         newMember.use_yn = "Y"

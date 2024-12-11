@@ -45,9 +45,9 @@ class Reservation(Base):
     # 예약 UID
     rsrv_uid: str | Column = Column(String(36), name="rsv_uid", primary_key=True, unique=True)
     # 병원 UID
-    hspt_uid: str | Column = Column(String(36), ForeignKey("hst_hospital.hspt_uid"))
+    hspt_uid: str | Column = Column(String(36), ForeignKey("hst_hospital.hspt_uid", ondelete="CASCADE"))
     # 환자 UID
-    member_uid: str | Column = Column(String(36), ForeignKey("cst_member.member_uid"))
+    member_uid: str | Column = Column(String(36), ForeignKey("cst_member.member_uid", ondelete="CASCADE"))
     # 예약 일자
     rsrv_dy: str | Column = Column(String(10), name="rsrv_dy", nullable=False)
     # 예약 시간
