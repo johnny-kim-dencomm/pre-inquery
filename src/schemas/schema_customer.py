@@ -21,3 +21,11 @@ class MemberInfo(MemberInput):
 
     class Config:
         from_attributes = True
+
+
+class PwdLoginInput(BaseModel):
+    member_uid: str | None = Field(title="member_uid", description="회원 UID", default=None)
+    password: str | None = Field(title="password", description="비밀번호", default=None)
+
+    class Config:
+        from_attributes = True

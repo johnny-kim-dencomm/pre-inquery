@@ -53,3 +53,22 @@ async def get_customer(
         return member_info
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=repr(e))
+
+
+@router.post(
+    path="/create.password",
+    summary="회원 비밀번호 등록",
+    response_class=JSONResponse,
+)
+async def post_customer_create_password(
+    param: schema_customer.PwdLoginInput
+):
+    try:
+        is_created: bool = await service_customer.create_member_password(member_uid=param.member_uid, password=param.password)
+        if is_created:
+            return {"result": "success"}
+        else:
+            return {"result": "fail"}
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail={"result", "error", "detail", repr(e)})
+

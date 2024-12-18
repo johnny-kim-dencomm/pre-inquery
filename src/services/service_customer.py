@@ -3,7 +3,9 @@ from datetime import datetime, UTC
 from fastapi_sqlalchemy import db
 from src.models import model_customer
 from src.schemas import schema_customer
+from passlib.context import CryptContext
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def create_customer(param: schema_customer.MemberInput)->str:
     """
@@ -45,4 +47,29 @@ async def get_member(member_uid: str):
         member = db.session.query(model_customer.Member).filter(member_uid == model_customer.Member.member_uid).first()
         return member
     except Exception as e:
+        raise e
+
+
+async def create_member_password(member_uid: str, password: str) -> bool:
+    """
+    사용자 비밀번호 등록
+
+    Parameters
+    ----------
+    member_uid 회원 UID
+    password 사용할 비밀번호
+
+    Returns
+    -------
+    bool 성공여부
+    """
+    try:
+        pwd = model_customer.PwdLogin()
+        pwd.member_uid = member_uid
+        pwd.password = pwd_context.hash(password)
+        db.session.add(pwd)
+        db.session.commit()
+        return True
+    except Exception as e:
+        db.session.rollback()
         raise e
